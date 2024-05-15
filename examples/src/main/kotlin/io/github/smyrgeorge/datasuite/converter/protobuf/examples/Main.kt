@@ -1,79 +1,25 @@
 package io.github.smyrgeorge.datasuite.converter.protobuf.examples
 
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
 import io.github.smyrgeorge.datasuite.converter.protobuf.KotlinClassToProtobuf
 import io.github.smyrgeorge.datasuite.converter.protobuf.annotation.ProtoFile
-import io.github.smyrgeorge.datasuite.converter.protobuf.annotation.ProtoSkip
 
 class Main
 
-@ProtoFile(
-    name = "test1.proto",
-    schema = "schema1",
-    polymorphism = ["sealed"]
-)
-data class Test1(
-    @ProtoSkip
+@ProtoFile(name = "a_class.proto", schema = "schema1")
+data class AClass(
     val a: String,
-    val test: TestEnum,
-    val b: List<String>,
-    @ProtoSkip
-    val bb: Map<String, List<String>>,
-    val kind: Kind,
-    val sealed: TestSealed
+    val b: List<AnEnum>
 ) {
-    enum class Kind {
-        A, B, C, D, E
+    enum class AnEnum {
+        A, B
     }
-}
-
-@ProtoFile(
-    name = "test2.proto",
-    schema = "schema2",
-    polymorphism = ["sealed", "testCamel"]
-)
-data class Test2(
-    val a: String,
-    val sealed: TestSealed,
-    @ProtoSkip
-    val testCamel: List<TestSealed>
-)
-
-enum class TestEnum {
-    V1,
-    V2,
-    V3
-}
-
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.EXISTING_PROPERTY,
-    property = "kind"
-)
-@JsonSubTypes(
-    JsonSubTypes.Type(value = TestSealed.S1::class, name = "S1"),
-    JsonSubTypes.Type(value = TestSealed.S2::class, name = "S2")
-)
-sealed interface TestSealed {
-    val kind: String
-
-    data class S1(
-        override val kind: String
-    ) : TestSealed
-
-    data class S2(
-        override val kind: String,
-        @ProtoSkip val test: String,
-        val b: String
-    ) : TestSealed
 }
 
 fun main(args: Array<String>) {
     KotlinClassToProtobuf.generate(
         topicPrefix = "sample",
         workDirectory = "examples/src/main/proto",
-        classes = listOf(Test1::class, Test2::class),
+        classes = listOf(AClass::class),
         protoPackage = "io.github.smyrgeorge.datasuite.proto"
     )
 }

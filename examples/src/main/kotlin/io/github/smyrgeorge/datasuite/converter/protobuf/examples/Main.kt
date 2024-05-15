@@ -1,7 +1,8 @@
-package io.github.smyrgeorge.datasuite.converter.protobuf
+package io.github.smyrgeorge.datasuite.converter.protobuf.examples
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import io.github.smyrgeorge.datasuite.converter.protobuf.KotlinClassToProtobuf
 import io.github.smyrgeorge.datasuite.converter.protobuf.annotation.ProtoFile
 import io.github.smyrgeorge.datasuite.converter.protobuf.annotation.ProtoSkip
 
@@ -71,7 +72,7 @@ sealed interface TestSealed {
 fun main(args: Array<String>) {
     KotlinClassToProtobuf.generate(
         topicPrefix = "sample",
-        workDirectory = "protogen4k/src/main/proto",
+        workDirectory = "examples/src/main/proto",
         classes = listOf(Test1::class, Test2::class),
         protoPackage = "io.github.smyrgeorge.datasuite.proto"
     )

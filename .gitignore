@@ -1,4 +1,5 @@
 # Igonre local properties file.
+examples/src/main/proto
 protogen4k/src/main/proto
 
 # Created by https://www.gitignore.io/api/java,macos,maven,gradle,kotlin,windows,eclipse,intellij,visualstudiocode

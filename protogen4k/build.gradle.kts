@@ -21,11 +21,11 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("reflect"))
-    implementation("com.google.guava:guava:32.0.1-jre")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.16.0")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
+    api(kotlin("reflect"))
+    api("com.google.guava:guava:32.0.1-jre")
+    api("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.16.0")
+    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
 }
 
 java {

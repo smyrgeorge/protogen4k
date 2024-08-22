@@ -1,11 +1,11 @@
+import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    `maven-publish`
-    `java-library`
-    signing
     kotlin("jvm")
+    // https://github.com/vanniktech/gradle-maven-publish-plugin
+    id("com.vanniktech.maven.publish") version "0.29.0"
 }
 
 group = rootProject.group
@@ -22,10 +22,10 @@ repositories {
 
 dependencies {
     api(kotlin("reflect"))
-    api("com.google.guava:guava:32.0.1-jre")
-    api("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.16.0")
-    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0")
-    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
+    implementation("com.google.guava:guava:32.0.1-jre")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.16.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
 }
 
 java {
@@ -33,59 +33,46 @@ java {
     withSourcesJar()
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "OSSRH"
-            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-            credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
+mavenPublishing {
+    coordinates(
+        groupId = group as String,
+        artifactId = name,
+        version = version as String
+    )
+
+    pom {
+        name = "actor4k"
+        description = "A small actor system written in kotlin using Coroutines (kotlinx.coroutines)."
+        url = "https://github.com/smyrgeorge/protogen4k"
+
+        licenses {
+            license {
+                name = "MIT License"
+                url = "https://github.com/smyrgeorge/protogen4k/blob/main/LICENSE"
             }
+        }
+
+        developers {
+            developer {
+                id = "smyrgeorge"
+                name = "Yorgos S."
+                email = "smyrgoerge@gmail.com"
+                url = "https://smyrgeorge.github.io/"
+            }
+        }
+
+        scm {
+            url = "https://github.com/smyrgeorge/protogen4k"
+            connection = "scm:git:https://github.com/smyrgeorge/protogen4k.git"
+            developerConnection = "scm:git:git@github.com:smyrgeorge/protogen4k.git"
         }
     }
 
-    publications {
-        val archivesBaseName = tasks.jar.get().archiveBaseName.get()
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-            artifactId = archivesBaseName
-            pom {
-                name = archivesBaseName
-                packaging = "jar"
-                description = "A small proto file generator from kotlin data classes."
-                url = "https://github.com/smyrgeorge/protogen4k"
+    // Configure publishing to Maven Central
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
 
-                scm {
-                    url = "https://github.com/smyrgeorge/protogen4k"
-                    connection = "scm:git:https://github.com/smyrgeorge/protogen4k.git"
-                    developerConnection = "scm:git:git@github.com:smyrgeorge/protogen4k.git"
-                }
-
-                licenses {
-                    license {
-                        name = "MIT License"
-                        url = "https://github.com/smyrgeorge/protogen4k/blob/main/LICENSE"
-                    }
-                }
-
-                developers {
-                    developer {
-                        name = "Yorgos S."
-                        email = "smyrgoerge@gmail.com"
-                        url = "https://smyrgeorge.github.io/"
-                    }
-                }
-            }
-        }
-    }
-}
-
-signing {
-    val signingKey = System.getenv("MAVEN_SIGNING_KEY")
-    val signingPassword = System.getenv("MAVEN_SIGNING_PASSWORD")
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign(publishing.publications)
+    // Enable GPG signing for all publications
+    signAllPublications()
 }
 
 tasks.withType<KotlinCompile> {

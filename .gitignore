@@ -1,4 +1,5 @@
 # Igonre local properties file.
+gradle.properties
 examples/src/main/proto
 protogen4k/src/main/proto
 

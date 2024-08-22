@@ -29,7 +29,7 @@ data class FileDef(
             append("\n")
             append("import \"$it\";")
         }
-        classes.forEach {
+        classes.sortedBy { it.name }.forEach {
             append("\n\n")
             append(it)
         }

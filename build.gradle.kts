@@ -1,5 +1,5 @@
 group = "io.github.smyrgeorge"
-version = "1.0.0"
+version = "1.0.1"
 
 // Common plugin versions here.
 plugins {
